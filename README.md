@@ -1,6 +1,6 @@
 <h1 align="center"> Laravel Subscribe </h1>
 
-<p align="center">❤️ User subscribe/unsubscribe feature for Laravel Application.</p>
+<p align="center">:mail: User subscribe/unsubscribe feature for Laravel Application.</p>
 
 
 ## Installing

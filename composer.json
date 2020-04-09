@@ -1,6 +1,6 @@
 {
     "name": "overtrue/laravel-subscribe",
-    "description": "User Subscribe features for Laravel Application.",
+    "description": "User Subscribe/Unsubscribe features for Laravel Application.",
     "license": "MIT",
     "authors": [
         {
@@ -22,10 +22,10 @@
         }
     },
     "require-dev": {
-        "laravel/framework": "^5.5",
+        "laravel/framework": "^5.8",
         "mockery/mockery": "^1.2",
         "phpunit/phpunit": "~8.0",
-        "orchestra/testbench": "^3.7",
+        "orchestra/testbench": "^3.8",
         "brainmaestro/composer-git-hooks": "^2.7",
         "friendsofphp/php-cs-fixer": "^2.16"
     },
