@@ -81,8 +81,6 @@ trait Subscriber
     }
 
     /**
-     * Return Subscribe.
-     *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function subscriptions()

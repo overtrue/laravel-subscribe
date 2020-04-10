@@ -60,6 +60,6 @@ trait Subscribable
             'subscribable_id',
             config('subscribe.user_foreign_key')
         )
-            ->where('subscribable_type', (new static())->getMorphClass());
+            ->where('subscribable_type', $this->getMorphClass());
     }
 }

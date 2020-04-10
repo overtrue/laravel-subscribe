@@ -34,8 +34,6 @@ class Subscription extends Model
     ];
 
     /**
-     * Like constructor.
-     *
      * @param array $attributes
      */
     public function __construct(array $attributes = [])
