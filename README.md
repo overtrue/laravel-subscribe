@@ -1,6 +1,9 @@
-<h1 align="center"> Laravel Subscribe </h1>
+Laravel Subscribe
+---
 
-<p align="center">:email: User subscribe/unsubscribe feature for Laravel Application.</p>
+:email: User subscribe/unsubscribe feature for Laravel Application.
+
+![CI](https://github.com/overtrue/laravel-subscribe/workflows/CI/badge.svg)
 
 
 ## Installing
