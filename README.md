@@ -22,7 +22,7 @@ $ php artisan vendor:publish --provider="Overtrue\\LaravelSubscribe\\SubscribeSe
 
 ### Migrations
 
-This step is also optional, if you want to custom subscriptions table, you can publish the migration files:
+**You need to publish the migration files for use the package:**
 
 ```php
 $ php artisan vendor:publish --provider="Overtrue\\LaravelSubscribe\\SubscribeServiceProvider" --tag=migrations
