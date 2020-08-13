@@ -14,7 +14,7 @@ namespace Overtrue\LaravelSubscribe;
 use Illuminate\Support\ServiceProvider;
 
 /**
- * Class LikeServiceProvider.
+ * Class SubscribeServiceProvider.
  */
 class SubscribeServiceProvider extends ServiceProvider
 {
