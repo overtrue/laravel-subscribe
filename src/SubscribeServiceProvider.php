@@ -14,7 +14,7 @@ namespace Overtrue\LaravelSubscribe;
 use Illuminate\Support\ServiceProvider;
 
 /**
- * Class LikeServiceProvider.
+ * Class SubscribeServiceProvider.
  */
 class SubscribeServiceProvider extends ServiceProvider
 {
@@ -30,10 +30,6 @@ class SubscribeServiceProvider extends ServiceProvider
         $this->publishes([
             \dirname(__DIR__) . '/migrations/' => database_path('migrations'),
         ], 'migrations');
-
-        if ($this->app->runningInConsole()) {
-            $this->loadMigrationsFrom(\dirname(__DIR__) . '/migrations/');
-        }
     }
 
     /**
