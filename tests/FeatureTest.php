@@ -1,13 +1,5 @@
 <?php
 
-/*
- * This file is part of the overtrue/laravel-subscribe.
- *
- * (c) overtrue <anzhengchao@gmail.com>
- *
- * This source file is subject to the MIT license that is bundled.
- */
-
 namespace Tests;
 
 use Illuminate\Support\Facades\Event;
@@ -107,7 +99,7 @@ class FeatureTest extends TestCase
         $this->assertSame('overtrue', $post->subscribers[0]['name']);
         $this->assertSame('allen', $post->subscribers[1]['name']);
 
-        $sqls = $this->getQueryLog(function() use ($user1, $user2, $user3, $post) {
+        $sqls = $this->getQueryLog(function () use ($user1, $user2, $user3, $post) {
             $this->assertTrue($post->isSubscribedBy($user1));
             $this->assertTrue($post->isSubscribedBy($user2));
             $this->assertFalse($post->isSubscribedBy($user3));
@@ -131,14 +123,14 @@ class FeatureTest extends TestCase
         $user->subscribe($book2);
 
         // start recording
-        $sqls = $this->getQueryLog(function() use ($user) {
+        $sqls = $this->getQueryLog(function () use ($user) {
             $user->load('subscriptions.subscribable');
         });
 
         $this->assertSame(3, $sqls->count());
 
         // from loaded relations
-        $sqls = $this->getQueryLog(function() use ($user, $post1) {
+        $sqls = $this->getQueryLog(function () use ($user, $post1) {
             $user->hasSubscribed($post1);
         });
 

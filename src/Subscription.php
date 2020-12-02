@@ -1,30 +1,22 @@
 <?php
 
-/*
- * This file is part of the overtrue/laravel-follow
- *
- * (c) overtrue <i@overtrue.me>
- *
- * This source file is subject to the MIT license that is bundled
- * with this source code in the file LICENSE.
- */
-
 namespace Overtrue\LaravelSubscribe;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 use Overtrue\LaravelSubscribe\Events\Subscribed;
 use Overtrue\LaravelSubscribe\Events\Unsubscribed;
 
 /**
- * Class Subscription.
- *
  * @property \Illuminate\Database\Eloquent\Model $user
  * @property \Illuminate\Database\Eloquent\Model $subscriber
  * @property \Illuminate\Database\Eloquent\Model $subscribable
  */
 class Subscription extends Model
 {
+    protected $guarded = [];
+
     /**
      * @var string[]
      */
@@ -49,8 +41,11 @@ class Subscription extends Model
 
         self::saving(function (Subscription $subscription) {
             $userForeignKey = \config('subscribe.user_foreign_key');
-
             $subscription->{$userForeignKey} = $subscription->{$userForeignKey} ?: auth()->id();
+
+            if (\config('subscribe.uuids')) {
+                $subscription->{$subscription->getKeyName()} = $subscription->{$subscription->getKeyName()} ?: (string) Str::orderedUuid();
+            }
         });
     }
 
