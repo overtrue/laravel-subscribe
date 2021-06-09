@@ -6,9 +6,6 @@ use Illuminate\Support\ServiceProvider;
 
 class SubscribeServiceProvider extends ServiceProvider
 {
-    /**
-     * Perform post-registration booting of services.
-     */
     public function boot()
     {
         $this->publishes([
@@ -20,9 +17,6 @@ class SubscribeServiceProvider extends ServiceProvider
         ], 'migrations');
     }
 
-    /**
-     * Register bindings in the container.
-     */
     public function register()
     {
         $this->mergeConfigFrom(

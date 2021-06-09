@@ -131,6 +131,79 @@ foreach($posts as $post) {
 }
 ```
 
+### Attach the subscription status to subscribable collection
+
+You can use `Subscriber::attachSubscriptionStatus(Collection $subscribeables)` to attach the user subscription status, it will set `has_subscribed` attribute to each model of `$subscribables`:
+
+#### For model
+
+```php
+$user1 = User::find(1);
+
+$user->attachSubscriptionStatus($user1);
+
+// result
+[
+    "id" => 1
+    "name" => "user1"
+    "private" => false
+    "created_at" => "2021-06-07T15:06:47.000000Z"
+    "updated_at" => "2021-06-07T15:06:47.000000Z"
+    "has_subscribed" => true  
+  ]
+```
+
+#### For `Collection | Paginator | LengthAwarePaginator | array`:
+
+```php
+$user = auth()->user();
+
+$posts = Post::oldest('id')->get();
+
+$posts = $user->attachSubscriptionStatus($posts);
+
+$posts = $posts->toArray();
+
+// result
+[
+  [
+    "id" => 1
+    "title" => "title 1"
+    "created_at" => "2021-06-07T15:06:47.000000Z"
+    "updated_at" => "2021-06-07T15:06:47.000000Z"
+    "has_subscribed" => true  
+  ],
+  [
+    "id" => 2
+    "title" => "title 2"
+    "created_at" => "2021-06-07T15:06:47.000000Z"
+    "updated_at" => "2021-06-07T15:06:47.000000Z"
+    "has_subscribed" => true
+  ],
+  [
+    "id" => 3
+    "title" => "title 3"
+    "created_at" => "2021-06-07T15:06:47.000000Z"
+    "updated_at" => "2021-06-07T15:06:47.000000Z"
+    "has_subscribed" => false
+  ],
+  [
+    "id" => 4
+    "title" => "title 4"
+    "created_at" => "2021-06-07T15:06:47.000000Z"
+    "updated_at" => "2021-06-07T15:06:47.000000Z"
+    "has_subscribed" => false
+  ],
+]
+```
+
+#### For pagination
+
+```php
+$posts = Post::paginate(20);
+
+$user->attachSubscriptionStatus($posts);
+```
 
 ### Events
 

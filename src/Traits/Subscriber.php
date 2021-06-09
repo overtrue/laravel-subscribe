@@ -2,28 +2,26 @@
 
 namespace Overtrue\LaravelSubscribe\Traits;
 
+use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Event;
-use Overtrue\LaravelSubscribe\Events\Subscribed;
-use Overtrue\LaravelSubscribe\Events\UnSubscribed;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 /**
  * @property \Illuminate\Database\Eloquent\Collection $subscriptions
  */
 trait Subscriber
 {
-    /**
-     * @param \Illuminate\Database\Eloquent\Model $object
-     */
     public function subscribe(Model $object)
     {
-        /* @var \Overtrue\LaravelSubscribe\Traits\Subscribable $object*/
+        /* @var \Overtrue\LaravelSubscribe\Traits\Subscribable|Model $object */
         if (!$this->hasSubscribed($object)) {
             $subscribe = app(config('subscribe.subscription_model'));
             $subscribe->{config('subscribe.user_foreign_key')} = $this->getKey();
+            $subscribe->subscribable_id = $object->getKey();
+            $subscribe->subscribable_type = $object->getMorphClass();
 
-            $object->subscriptions()->save($subscribe);
+            $this->subscriptions()->save($subscribe);
         }
     }
 
@@ -34,8 +32,8 @@ trait Subscriber
      */
     public function unsubscribe(Model $object)
     {
-        /* @var \Overtrue\LaravelSubscribe\Traits\Subscribable $object*/
-        $relation = $object->subscriptions()
+        /* @var \Overtrue\LaravelSubscribe\Traits\Subscribable|Model $object */
+        $relation = $this->subscriptions()
             ->where('subscribable_id', $object->getKey())
             ->where('subscribable_type', $object->getMorphClass())
             ->where(config('subscribe.user_foreign_key'), $this->getKey())
@@ -47,8 +45,6 @@ trait Subscriber
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Model $object
-     *
      * @throws \Exception
      */
     public function toggleSubscribe(Model $object)
@@ -56,23 +52,58 @@ trait Subscriber
         $this->hasSubscribed($object) ? $this->unsubscribe($object) : $this->subscribe($object);
     }
 
-    /**
-     * @param \Illuminate\Database\Eloquent\Model $object
-     *
-     * @return bool
-     */
-    public function hasSubscribed(Model $object)
+    public function hasSubscribed(Model $object): bool
     {
         return tap($this->relationLoaded('subscriptions') ? $this->subscriptions : $this->subscriptions())
-            ->where('subscribable_id', $object->getKey())
-            ->where('subscribable_type', $object->getMorphClass())
-            ->count() > 0;
+                ->where('subscribable_id', $object->getKey())
+                ->where('subscribable_type', $object->getMorphClass())
+                ->count() > 0;
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
-    public function subscriptions()
+    public function attachSubscriptionStatus($subscribables, callable $resolver = null)
+    {
+        $returnFirst = false;
+
+        switch (true) {
+            case $subscribables instanceof Model:
+                $returnFirst = true;
+                $subscribables = \collect([$subscribables]);
+                break;
+            case $subscribables instanceof LengthAwarePaginator:
+                $subscribables = $subscribables->getCollection();
+                break;
+            case $subscribables instanceof Paginator:
+                $subscribables = \collect($subscribables->items());
+                break;
+            case \is_array($subscribables):
+                $subscribables = \collect($subscribables);
+                break;
+        }
+
+        \abort_if(!($subscribables instanceof Collection), 422, 'Invalid $subscribables type.');
+
+        $subscribed = $this->subscriptions()->get();
+
+        $subscribables->map(
+            function ($subscribable) use ($subscribed, $resolver) {
+                $resolver = $resolver ?? fn ($m) => $m;
+                $subscribable = $resolver($subscribable);
+
+                if (!!$subscribable && \in_array(Subscribable::class, \class_uses($subscribable))) {
+                    $subscribable->setAttribute(
+                        'has_subscribed',
+                        $subscribed->where('subscribable_id', $subscribable->getKey())
+                            ->where('subscribable_type', $subscribable->getMorphClass())
+                            ->count() > 0
+                    );
+                }
+            }
+        );
+
+        return $returnFirst ? $subscribables->first() : $subscribables;
+    }
+
+    public function subscriptions(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(config('subscribe.subscription_model'), config('subscribe.user_foreign_key'), $this->getKeyName());
     }

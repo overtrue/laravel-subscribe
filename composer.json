@@ -9,7 +9,8 @@
         }
     ],
     "require": {
-        "laravel/framework": "^7.0|^8.0"
+        "php": ">=7.4",
+        "laravel/framework": "^8.0"
     },
     "autoload": {
         "psr-4": {
@@ -27,11 +28,13 @@
         "phpunit/phpunit": "^9.0",
         "orchestra/testbench": "^6.0",
         "brainmaestro/composer-git-hooks": "^2.7",
-        "friendsofphp/php-cs-fixer": "^2.16"
+        "friendsofphp/php-cs-fixer": "^3.0"
     },
     "extra": {
         "laravel": {
-            "providers": ["Overtrue\\LaravelSubscribe\\SubscribeServiceProvider"]
+            "providers": [
+                "Overtrue\\LaravelSubscribe\\SubscribeServiceProvider"
+            ]
         },
         "hooks": {
             "pre-commit": [
@@ -43,15 +46,18 @@
     },
     "scripts": {
         "post-update-cmd": [
+            "cghooks remove",
+            "cghooks add --ignore-lock",
             "cghooks update"
         ],
         "post-install-cmd": [
+            "cghooks remove",
             "cghooks add --ignore-lock",
             "cghooks update"
         ],
         "cghooks": "vendor/bin/cghooks",
-        "check-style": "php-cs-fixer fix --using-cache=no --diff --config=.php_cs --dry-run --ansi",
-        "fix-style": "php-cs-fixer fix --using-cache=no --config=.php_cs --ansi",
+        "check-style": "php-cs-fixer fix --using-cache=no --diff --dry-run --ansi",
+        "fix-style": "php-cs-fixer fix --using-cache=no --ansi",
         "test": "vendor/bin/phpunit --colors=always"
     },
     "scripts-descriptions": {

@@ -20,7 +20,7 @@ class FeatureTest extends TestCase
         config(['auth.providers.users.model' => User::class]);
     }
 
-    public function testBasicFeatures()
+    public function test_basic_features()
     {
         $user = User::create(['name' => 'overtrue']);
         $post = Post::create(['title' => 'Hello world!']);
@@ -82,6 +82,55 @@ class FeatureTest extends TestCase
 
         $this->assertSame(4, $user->subscriptions()->count());
         $this->assertSame(2, $user->subscriptions()->withType(Book::class)->count());
+    }
+
+    public function test_user_can_also_subscribe_user()
+    {
+        /* @var \Tests\User $user1 */
+        $user1 = User::create(['name' => 'overtrue']);
+        /* @var \Tests\User $user2 */
+        $user2 = User::create(['name' => 'allen']);
+
+        $user1->subscribe($user2);
+
+        $this->assertTrue($user1->hasSubscribed($user2));
+        $this->assertTrue($user2->isSubscribedBy($user1));
+    }
+
+    public function test_attach_subscription_status()
+    {
+        $post1 = Post::create(['title' => 'title 1']);
+        $post2 = Post::create(['title' => 'title 2']);
+        $post3 = Post::create(['title' => 'title 3']);
+        $post4 = Post::create(['title' => 'title 4']);
+
+        /* @var \Tests\User $user */
+        $user = User::create(['name' => 'overtrue']);
+
+        $user->subscribe($post2);
+        $user->subscribe($post3);
+
+        $list = Post::all();
+
+        $sqls = $this->getQueryLog(
+            function () use ($user, $list) {
+                $user->attachSubscriptionStatus($list);
+            }
+        );
+
+        $this->assertSame(1, $sqls->count());
+
+        $this->assertFalse($list[0]->has_subscribed);
+        $this->assertTrue($list[1]->has_subscribed);
+        $this->assertTrue($list[2]->has_subscribed);
+        $this->assertFalse($list[3]->has_subscribed);
+
+        // with custom resolver
+        $list = \collect([['post' => $post1], ['post' => $post2], ['post' => $post3]]);
+
+        $user->attachSubscriptionStatus($list, fn ($item) => $item['post']);
+
+        $this->assertTrue($list[1]['post']['has_subscribed']);
     }
 
     public function test_object_subscribers()
