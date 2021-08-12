@@ -33,7 +33,7 @@ $ php artisan vendor:publish --provider="Overtrue\\LaravelSubscribe\\SubscribeSe
 
 ### Traits
 
-#### `Overtrue\LaravelSubscribe\Traits\CanSubscribe`
+#### `Overtrue\LaravelSubscribe\Traits\Subscriber`
 
 ```php
 
