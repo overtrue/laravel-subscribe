@@ -228,6 +228,62 @@ class FeatureTest extends TestCase
         $this->assertSame($user2->name, $todaySubscribedUsers[1]->name);
     }
 
+    public function test_get_post_popular_subscribable_object()
+    {
+        /* @var \Overtrue\LaravelSubscribe\Traits\Subscribable|\Overtrue\LaravelSubscribe\Traits\Subscriber $user1 */
+        /* @var \Overtrue\LaravelSubscribe\Traits\Subscribable|\Overtrue\LaravelSubscribe\Traits\Subscriber $user2 */
+        /* @var \Overtrue\LaravelSubscribe\Traits\Subscribable|\Overtrue\LaravelSubscribe\Traits\Subscriber $user3 */
+        /* @var \Overtrue\LaravelSubscribe\Traits\Subscribable|\Overtrue\LaravelSubscribe\Traits\Subscriber $user4 */
+        /* @var \Overtrue\LaravelSubscribe\Traits\Subscribable|\Overtrue\LaravelSubscribe\Traits\Subscriber $user5 */
+        $user1 = User::create(['name' => 'user1']);
+        $user2 = User::create(['name' => 'user2']);
+        $user3 = User::create(['name' => 'user3']);
+        $user4 = User::create(['name' => 'user4']);
+        $user5 = User::create(['name' => 'user5']);
+
+        /* @var \Overtrue\LaravelSubscribe\Traits\Subscribable $post1 */
+        /* @var \Overtrue\LaravelSubscribe\Traits\Subscribable $post2 */
+        /* @var \Overtrue\LaravelSubscribe\Traits\Subscribable $post3 */
+        /* @var \Overtrue\LaravelSubscribe\Traits\Subscribable $post4 */
+        $post1 = Post::create(['title' => 'post1']);
+        $post2 = Post::create(['title' => 'post1']);
+        $post3 = Post::create(['title' => 'post1']);
+        $post4 = Post::create(['title' => 'post1']);
+
+        // post2: 2 subscribers
+        $user2->subscribe($post2);
+        $user3->subscribe($post2);
+
+        // post3: 0 subscribers
+        // post4: 1 subscribers
+        $user4->subscribe($post4);
+
+        // post1: 3 subscribers
+        $user1->subscribe($post1);
+        $user2->subscribe($post1);
+        $user3->subscribe($post1);
+
+        $postsOrderBySubscribersCount = Post::orderBySubscribersCountDesc()->get();
+        // same as:
+        // $postsOrderBySubscribersCount = Post::withCount('subscribers')->orderByDesc('subscribers_count')->get();
+
+        $this->assertSame($post1->title, $postsOrderBySubscribersCount[0]->title);
+        $this->assertEquals(3, $postsOrderBySubscribersCount[0]->subscribers_count);
+        $this->assertSame($post2->title, $postsOrderBySubscribersCount[1]->title);
+        $this->assertEquals(2, $postsOrderBySubscribersCount[1]->subscribers_count);
+        $this->assertSame($post4->title, $postsOrderBySubscribersCount[2]->title);
+        $this->assertEquals(1, $postsOrderBySubscribersCount[2]->subscribers_count);
+        $this->assertSame($post3->title, $postsOrderBySubscribersCount[3]->title);
+        $this->assertEquals(0, $postsOrderBySubscribersCount[3]->subscribers_count);
+
+        $mostPopularPost = Post::orderBySubscribersCountDesc()->first();
+        // same as:
+        // $mostPopularPost = Post::withCount('subscribers')->orderByDesc('subscribers_count')->first();
+        $this->assertSame($post1->title, $mostPopularPost->title);
+        $this->assertEquals(3, $mostPopularPost->subscribers_count);
+    }
+
+
     /**
      * @param \Closure $callback
      *

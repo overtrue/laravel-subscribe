@@ -109,6 +109,21 @@ foreach($users as $user) {
 }
 ```
 
+### Order by subscribers count
+
+You can query subscribable model order by subscribers count with following methods:
+
+- `orderBySubscribersCountDesc()`
+- `orderBySubscribersCountAsc()`
+- `orderBySubscribersCount(string $direction = 'desc')`
+
+example: 
+
+```php
+$posts = Post::orderBySubscribersCountDesc()->get();
+$mostPopularPost = Post::orderBySubscribersCountDesc()->first();
+```
+
 ### N+1 issue
 
 To avoid the N+1 issue, you can use eager loading to reduce this operation to just 2 queries. When querying, you may specify which relationships should be eager loaded using the `with` method:
