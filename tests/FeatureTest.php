@@ -186,6 +186,48 @@ class FeatureTest extends TestCase
         $this->assertEmpty($sqls->all());
     }
 
+    public function test_get_recent_subscribers()
+    {
+        /* @var \Overtrue\LaravelSubscribe\Traits\Subscribable|\Overtrue\LaravelSubscribe\Traits\Subscriber $user */
+        $user = User::create(['name' => 'user']);
+
+        /* @var \Overtrue\LaravelSubscribe\Traits\Subscribable|\Overtrue\LaravelSubscribe\Traits\Subscriber $user1 */
+        /* @var \Overtrue\LaravelSubscribe\Traits\Subscribable|\Overtrue\LaravelSubscribe\Traits\Subscriber $user2 */
+        /* @var \Overtrue\LaravelSubscribe\Traits\Subscribable|\Overtrue\LaravelSubscribe\Traits\Subscriber $user3 */
+        /* @var \Overtrue\LaravelSubscribe\Traits\Subscribable|\Overtrue\LaravelSubscribe\Traits\Subscriber $user4 */
+        /* @var \Overtrue\LaravelSubscribe\Traits\Subscribable|\Overtrue\LaravelSubscribe\Traits\Subscriber $user5 */
+        $user1 = User::create(['name' => 'user1']);
+        $user2 = User::create(['name' => 'user2']);
+        $user3 = User::create(['name' => 'user3']);
+        $user4 = User::create(['name' => 'user4']);
+        $user5 = User::create(['name' => 'user5']);
+
+        // today subscribers
+        $user1->subscribe($user);
+        $user2->subscribe($user);
+        $user3->subscribe($user);
+
+        // next week subscribers
+        $this->travel(7)->days();
+        $user4->subscribe($user);
+        $user5->subscribe($user);
+
+        $this->travelBack();
+
+        $from = \now()->startofDay();
+        $to = \now()->endofDay();
+
+        $allSubscribers = $user->subscribers;
+        $todaySubscribedUsers = $user->subscribers()->wherePivotBetween('subscriptions.created_at', [$from, $to])->get();
+        $todaySubscribedUsersCount = $user->subscribers()->wherePivotBetween('subscriptions.created_at', [$from, $to])->count();
+
+        $this->assertCount(5, $allSubscribers);
+        $this->assertCount(3, $todaySubscribedUsers);
+        $this->assertSame(3, $todaySubscribedUsersCount);
+        $this->assertSame($user1->name, $todaySubscribedUsers[0]->name);
+        $this->assertSame($user2->name, $todaySubscribedUsers[1]->name);
+    }
+
     /**
      * @param \Closure $callback
      *
