@@ -6,6 +6,8 @@ Laravel Subscribe
 ![CI](https://github.com/overtrue/laravel-subscribe/workflows/CI/badge.svg)
 
 
+[![Sponsor me](https://raw.githubusercontent.com/overtrue/overtrue/master/sponsor-me-button-s.svg)](https://github.com/sponsors/overtrue)
+
 ## Installing
 
 ```shell
@@ -238,7 +240,7 @@ $user->attachSubscriptionStatus($posts);
 
 ## :heart: Sponsor me 
 
-If you like the work I do and want to support it, [you know what to do :heart:](https://github.com/sponsors/overtrue)
+[![Sponsor me](https://raw.githubusercontent.com/overtrue/overtrue/master/sponsor-me.svg)](https://github.com/sponsors/overtrue)
 
 如果你喜欢我的项目并想支持它，[点击这里 :heart:](https://github.com/sponsors/overtrue)
 
