@@ -2,10 +2,12 @@
 
 namespace Overtrue\LaravelSubscribe\Traits;
 
+use Illuminate\Contracts\Pagination\CursorPaginator;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
+use Illuminate\Support\Enumerable;
+use Illuminate\Support\LazyCollection;
 
 /**
  * @property \Illuminate\Database\Eloquent\Collection $subscriptions
@@ -73,14 +75,18 @@ trait Subscriber
                 $subscribables = $subscribables->getCollection();
                 break;
             case $subscribables instanceof Paginator:
+            case $subscribables instanceof CursorPaginator:
                 $subscribables = \collect($subscribables->items());
+                break;
+            case $subscribables instanceof LazyCollection:
+                $subscribables = \collect($subscribables->all());
                 break;
             case \is_array($subscribables):
                 $subscribables = \collect($subscribables);
                 break;
         }
 
-        \abort_if(!($subscribables instanceof Collection), 422, 'Invalid $subscribables type.');
+        \abort_if(!($subscribables instanceof Enumerable), 422, 'Invalid $subscribables type.');
 
         $subscribed = $this->subscriptions()->get();
 

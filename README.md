@@ -111,6 +111,21 @@ foreach($users as $user) {
 }
 ```
 
+### Filter subscribables
+
+```php
+$posts = Post::hasSubscribers($user)->get();
+$posts = Post::hasSubscribers($user->id)->get();
+$posts = Post::hasSubscribers([$user1, $user2])->get();
+$posts = Post::hasSubscribers([$user1->id, $user2->id])->get();
+
+// or
+$posts = Post::subscribedBy($user)->get();
+$posts = Post::subscribedBy($user->id)->get();
+$posts = Post::subscribedBy([$user1, $user2])->get();
+$posts = Post::subscribedBy([$user1->id, $user2->id])->get();
+```
+
 ### Order by subscribers count
 
 You can query subscribable model order by subscribers count with following methods:

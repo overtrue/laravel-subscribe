@@ -283,6 +283,60 @@ class FeatureTest extends TestCase
         $this->assertEquals(3, $mostPopularPost->subscribers_count);
     }
 
+    public function test_get_user_subscribed_items()
+    {
+        /* @var \Overtrue\LaravelSubscribe\Traits\Subscribable|\Overtrue\LaravelSubscribe\Traits\Subscriber $user1 */
+        /* @var \Overtrue\LaravelSubscribe\Traits\Subscribable|\Overtrue\LaravelSubscribe\Traits\Subscriber $user2 */
+        /* @var \Overtrue\LaravelSubscribe\Traits\Subscribable|\Overtrue\LaravelSubscribe\Traits\Subscriber $user3 */
+        /* @var \Overtrue\LaravelSubscribe\Traits\Subscribable|\Overtrue\LaravelSubscribe\Traits\Subscriber $user4 */
+        /* @var \Overtrue\LaravelSubscribe\Traits\Subscribable|\Overtrue\LaravelSubscribe\Traits\Subscriber $user5 */
+        $user1 = User::create(['name' => 'user1']);
+        $user2 = User::create(['name' => 'user2']);
+
+        /* @var \Overtrue\LaravelSubscribe\Traits\Subscribable $post1 */
+        /* @var \Overtrue\LaravelSubscribe\Traits\Subscribable $post2 */
+        /* @var \Overtrue\LaravelSubscribe\Traits\Subscribable $post3 */
+        /* @var \Overtrue\LaravelSubscribe\Traits\Subscribable $post4 */
+        $post1 = Post::create(['title' => 'post1']);
+        $post2 = Post::create(['title' => 'post1']);
+        $post3 = Post::create(['title' => 'post1']);
+        $post4 = Post::create(['title' => 'post1']);
+
+        $user1->subscribe($post1);
+        $user1->subscribe($post2);
+        $user1->subscribe($post3);
+        $user2->subscribe($post4);
+
+        // raw
+        $user1SubscribedPosts = Post::whereHas('subscribers', fn ($q) => $q->where('user_id', $user1->id))->get();
+
+        $this->assertCount(3, $user1SubscribedPosts);
+
+        $this->assertSame($post1->id, $user1SubscribedPosts[0]->id);
+        $this->assertSame($post2->id, $user1SubscribedPosts[1]->id);
+        $this->assertSame($post3->id, $user1SubscribedPosts[2]->id);
+
+        // scope
+        $user1SubscribedPosts = Post::subscribedBy($user1)->get();
+
+        $this->assertCount(3, $user1SubscribedPosts);
+
+        $this->assertSame($post1->id, $user1SubscribedPosts[0]->id);
+        $this->assertSame($post2->id, $user1SubscribedPosts[1]->id);
+        $this->assertSame($post3->id, $user1SubscribedPosts[2]->id);
+
+        // scope
+        $posts = Post::hasSubscribers([$user1, $user2])->get();
+
+        $this->assertCount(4, $posts);
+
+        $this->assertSame($post1->id, $posts[0]->id);
+        $this->assertSame($post2->id, $posts[1]->id);
+        $this->assertSame($post3->id, $posts[2]->id);
+        $this->assertSame($post4->id, $posts[3]->id);
+        $this->assertSame($user2->id, $posts[3]->subscriptionsHistory[0]->user_id);
+    }
+
 
     /**
      * @param \Closure $callback
