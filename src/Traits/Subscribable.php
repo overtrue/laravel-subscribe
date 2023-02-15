@@ -20,7 +20,7 @@ trait Subscribable
                 return $this->subscribers->contains($user);
             }
 
-            return !!$this->subscribers()->find($user->getKey());
+            return (bool) $this->subscribers()->find($user->getKey());
         }
 
         return false;

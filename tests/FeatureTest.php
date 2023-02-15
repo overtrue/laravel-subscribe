@@ -337,12 +337,6 @@ class FeatureTest extends TestCase
         $this->assertSame($user2->id, $posts[3]->subscriptionsHistory[0]->user_id);
     }
 
-
-    /**
-     * @param \Closure $callback
-     *
-     * @return \Illuminate\Support\Collection
-     */
     protected function getQueryLog(\Closure $callback): \Illuminate\Support\Collection
     {
         $sqls = \collect([]);

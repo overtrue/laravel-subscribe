@@ -17,7 +17,7 @@ trait Subscriber
     public function subscribe(Model $object)
     {
         /* @var \Overtrue\LaravelSubscribe\Traits\Subscribable|Model $object */
-        if (!$this->hasSubscribed($object)) {
+        if (! $this->hasSubscribed($object)) {
             $subscribe = app(config('subscribe.subscription_model'));
             $subscribe->{config('subscribe.user_foreign_key')} = $this->getKey();
             $subscribe->subscribable_id = $object->getKey();
@@ -28,8 +28,6 @@ trait Subscriber
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Model $object
-     *
      * @throws \Exception
      */
     public function unsubscribe(Model $object)
@@ -86,7 +84,7 @@ trait Subscriber
                 break;
         }
 
-        \abort_if(!($subscribables instanceof Enumerable), 422, 'Invalid $subscribables type.');
+        \abort_if(! ($subscribables instanceof Enumerable), 422, 'Invalid $subscribables type.');
 
         $subscribed = $this->subscriptions()->get();
 
@@ -95,7 +93,7 @@ trait Subscriber
                 $resolver = $resolver ?? fn ($m) => $m;
                 $subscribable = $resolver($subscribable);
 
-                if (!!$subscribable && \in_array(Subscribable::class, \class_uses($subscribable))) {
+                if ((bool) $subscribable && \in_array(Subscribable::class, \class_uses($subscribable))) {
                     $subscribable->setAttribute(
                         'has_subscribed',
                         $subscribed->where('subscribable_id', $subscribable->getKey())

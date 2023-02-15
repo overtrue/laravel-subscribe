@@ -13,8 +13,6 @@ class Event
 
     /**
      * Event constructor.
-     *
-     * @param \Illuminate\Database\Eloquent\Model $subscription
      */
     public function __construct(Model $subscription)
     {
