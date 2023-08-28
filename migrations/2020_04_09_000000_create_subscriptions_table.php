@@ -12,9 +12,18 @@ class CreateSubscriptionsTable extends Migration
     public function up()
     {
         Schema::create(config('subscribe.subscriptions_table'), function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->unsignedBigInteger(config('subscribe.user_foreign_key'))->index()->comment('user_id');
-            $table->morphs('subscribable');
+            if (config('subscribe.uuids')) {
+                $table->uuid('id')->unique()->primary();
+                $table->foreignUuid(config('subscribe.user_foreign_key'))->index()->comment('user_id');
+            } else {
+                $table->bigIncrements('id');
+                $table->unsignedBigInteger(config('subscribe.user_foreign_key'))->index()->comment('user_id');
+            }
+            if (config('subscribe.uuids')) {
+                $table->uuidMorphs('votable');
+            } else {
+                $table->morphs('subscribable');
+            }
             $table->timestamps();
         });
     }
