@@ -20,7 +20,7 @@ class CreateSubscriptionsTable extends Migration
                 $table->unsignedBigInteger(config('subscribe.user_foreign_key'))->index()->comment('user_id');
             }
             if (config('subscribe.uuids')) {
-                $table->uuidMorphs('votable');
+                $table->uuidMorphs('subscribable');
             } else {
                 $table->morphs('subscribable');
             }
