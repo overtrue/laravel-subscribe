@@ -60,7 +60,7 @@ trait Subscriber
                 ->count() > 0;
     }
 
-    public function attachSubscriptionStatus($subscribables, callable $resolver = null)
+    public function attachSubscriptionStatus($subscribables, ?callable $resolver = null)
     {
         $returnFirst = false;
 
