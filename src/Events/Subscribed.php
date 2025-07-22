@@ -2,6 +2,4 @@
 
 namespace Overtrue\LaravelSubscribe\Events;
 
-class Subscribed extends Event
-{
-}
+class Subscribed extends Event {}

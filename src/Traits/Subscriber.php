@@ -55,9 +55,9 @@ trait Subscriber
     public function hasSubscribed(Model $object): bool
     {
         return tap($this->relationLoaded('subscriptions') ? $this->subscriptions : $this->subscriptions())
-                ->where('subscribable_id', $object->getKey())
-                ->where('subscribable_type', $object->getMorphClass())
-                ->count() > 0;
+            ->where('subscribable_id', $object->getKey())
+            ->where('subscribable_type', $object->getMorphClass())
+            ->count() > 0;
     }
 
     public function attachSubscriptionStatus($subscribables, ?callable $resolver = null)

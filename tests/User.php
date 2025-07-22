@@ -8,8 +8,8 @@ use Overtrue\LaravelSubscribe\Traits\Subscriber;
 
 class User extends Model
 {
-    use Subscriber;
     use Subscribable;
+    use Subscriber;
 
     protected $fillable = ['name'];
 }
