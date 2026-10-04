@@ -4,14 +4,16 @@ namespace Overtrue\LaravelSubscribe;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Str;
 use Overtrue\LaravelSubscribe\Events\Subscribed;
 use Overtrue\LaravelSubscribe\Events\Unsubscribed;
 
 /**
- * @property \Illuminate\Database\Eloquent\Model $user
- * @property \Illuminate\Database\Eloquent\Model $subscriber
- * @property \Illuminate\Database\Eloquent\Model $subscribable
+ * @property Model $user
+ * @property Model $subscriber
+ * @property Model $subscribable
  */
 class Subscription extends Model
 {
@@ -43,17 +45,17 @@ class Subscription extends Model
         });
     }
 
-    public function subscribable(): \Illuminate\Database\Eloquent\Relations\MorphTo
+    public function subscribable(): MorphTo
     {
         return $this->morphTo();
     }
 
-    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function user(): BelongsTo
     {
         return $this->belongsTo(\config('auth.providers.users.model'), \config('subscribe.user_foreign_key'));
     }
 
-    public function subscriber(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function subscriber(): BelongsTo
     {
         return $this->user();
     }

@@ -1,5 +1,7 @@
 <?php
 
+use Overtrue\LaravelSubscribe\Subscription;
+
 return [
     /**
      * Use uuid as primary key.
@@ -19,5 +21,5 @@ return [
     /*
      * Model name for Subscribe record.
      */
-    'subscription_model' => \Overtrue\LaravelSubscribe\Subscription::class,
+    'subscription_model' => Subscription::class,
 ];

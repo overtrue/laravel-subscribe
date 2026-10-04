@@ -8,10 +8,18 @@ Laravel Subscribe
 
 [![Sponsor me](https://github.com/overtrue/overtrue/blob/master/sponsor-me-button-s.svg?raw=true)](https://github.com/sponsors/overtrue)
 
+## Requirements
+
+- PHP 8.3 or later
+- Laravel 13.x
+
+Version 5.x requires Laravel 13. Applications on older Laravel versions should
+stay on a compatible 4.x release. See [UPGRADING.md](UPGRADING.md) before upgrading.
+
 ## Installing
 
 ```shell
-$ composer require overtrue/laravel-subscribe -vvv
+$ composer require overtrue/laravel-subscribe:^5.0
 ```
 
 ### Configuration
