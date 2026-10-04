@@ -1,6 +1,6 @@
 {
   "name": "Laravel Subscribe Dev Environment",
-  "image": "mcr.microsoft.com/devcontainers/php:1-8.2-bullseye",
+  "image": "mcr.microsoft.com/devcontainers/php:8.3-bookworm",
   "forwardPorts": [
     8080
   ],
