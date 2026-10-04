@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Event;
 use Overtrue\LaravelSubscribe\Events\Subscribed;
 use Overtrue\LaravelSubscribe\Events\Unsubscribed;
@@ -337,7 +338,7 @@ class FeatureTest extends TestCase
         $this->assertSame($user2->id, $posts[3]->subscriptionsHistory[0]->user_id);
     }
 
-    protected function getQueryLog(\Closure $callback): \Illuminate\Support\Collection
+    protected function getQueryLog(\Closure $callback): Collection
     {
         $sqls = \collect([]);
         \DB::listen(function ($query) use ($sqls) {

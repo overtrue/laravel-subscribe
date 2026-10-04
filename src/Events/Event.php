@@ -3,11 +3,12 @@
 namespace Overtrue\LaravelSubscribe\Events;
 
 use Illuminate\Database\Eloquent\Model;
+use Overtrue\LaravelSubscribe\Subscription;
 
 class Event
 {
     /**
-     * @var \Illuminate\Database\Eloquent\Model|\Overtrue\LaravelSubscribe\Subscription
+     * @var Model|Subscription
      */
     public $subscription;
 

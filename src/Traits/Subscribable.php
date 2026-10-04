@@ -2,10 +2,13 @@
 
 namespace Overtrue\LaravelSubscribe\Traits;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
- * @property \Illuminate\Database\Eloquent\Collection $subscribers
+ * @property Collection $subscribers
  *
  * @method static \Illuminate\Database\Eloquent\Builder orderBySubscribersCountDesc()
  * @method static \Illuminate\Database\Eloquent\Builder orderBySubscribersCountAsc()
@@ -66,7 +69,7 @@ trait Subscribable
         return $this->scopeOrderBySubscribersCount($query, 'asc');
     }
 
-    public function subscribers(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    public function subscribers(): BelongsToMany
     {
         return $this->belongsToMany(
             config('auth.providers.users.model'),
@@ -78,7 +81,7 @@ trait Subscribable
             ->withPivot(['subscribable_id', 'subscribable_type', 'user_id', 'created_at', 'updated_at']);
     }
 
-    public function subscriptionsHistory(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function subscriptionsHistory(): HasMany
     {
         return $this->hasMany(config('subscribe.subscription_model'), 'subscribable_id')
             ->where('subscribable_type', $this->getMorphClass());

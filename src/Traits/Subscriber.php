@@ -4,13 +4,15 @@ namespace Overtrue\LaravelSubscribe\Traits;
 
 use Illuminate\Contracts\Pagination\CursorPaginator;
 use Illuminate\Contracts\Pagination\Paginator;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Enumerable;
 use Illuminate\Support\LazyCollection;
 
 /**
- * @property \Illuminate\Database\Eloquent\Collection $subscriptions
+ * @property Collection $subscriptions
  */
 trait Subscriber
 {
@@ -107,7 +109,7 @@ trait Subscriber
         return $returnFirst ? $subscribables->first() : $subscribables;
     }
 
-    public function subscriptions(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function subscriptions(): HasMany
     {
         return $this->hasMany(config('subscribe.subscription_model'), config('subscribe.user_foreign_key'), $this->getKeyName());
     }
